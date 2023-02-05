@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'myjenkinswithjdk11andmaven:latest'
-        }
-    }
+    agent any
     stages {
         stage('Build') {
             steps {
