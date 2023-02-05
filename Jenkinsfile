@@ -13,7 +13,7 @@ sh "/opt/maven/bin/mvn test"
 }
   stage('Deploy') {
 steps {
-sh '/Applications/Docker.app/Contents/Resources/bin/docker-compose/docker build -t spring-jenkins:v1 .'
+sh '/Applications/Docker.app/Contents/Resources/bin/docker/docker build -t spring-jenkins:v1 .'
 }
 }
 }
