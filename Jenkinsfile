@@ -1,20 +1,29 @@
 pipeline {
-agent any
-stages {
-stage(‘Build’) {
-steps {
-sh "/opt/maven/bin/mvn clean package"
-}
-}
-stage(‘Test’) {
-steps {
-sh "/opt/maven/bin/mvn test"
-}
-}
-  stage('Deploy') {
-steps {
-sh "C:/Program Files/Docker/Docker/resources/bin/docker build -t spring-jenkins:v1 ."
-}
-}
-}
+    agent {
+        docker {
+            image 'jenkins/jenkins:lts'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh "/opt/maven/bin/mvn clean package"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "/opt/maven/bin/mvn test"
+            }
+        }
+        stage('Install Docker') {
+            steps {
+                sh 'apt-get update && apt-get install -y docker.io'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh "docker build -t spring-jenkins:v1 ."
+            }
+        }
+    }
 }
