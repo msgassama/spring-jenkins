@@ -1,8 +1,6 @@
 pipeline {
     agent {
-        docker {
-            image 'jenkins/jenkins:lts'
-        }
+        label 'docker'
     }
     stages {
         stage('Build') {
