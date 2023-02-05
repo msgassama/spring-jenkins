@@ -1,6 +1,8 @@
 pipeline {
     agent {
-        label 'docker'
+        docker {
+            image 'myjenkinswithjdk11andmaven:latest'
+        }
     }
     stages {
         stage('Build') {
