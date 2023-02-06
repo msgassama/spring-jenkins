@@ -3,12 +3,12 @@ agent any
 stages {
 stage(‘Build’) {
 steps {
-sh "/opt/maven/bin/mvn clean package"
+bat "C:/apache-maven-3.8.6/bin/mvn clean package"
 }
 }
 stage(‘Test’) {
 steps {
-sh "/opt/maven/bin/mvn test"
+bat "C:/apache-maven-3.8.6/bin/mvn test"
 }
 }
 }
