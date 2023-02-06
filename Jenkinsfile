@@ -13,7 +13,7 @@ bat "C:/apache-maven-3.8.6/bin/mvn test"
 }
 stage('Deploy') {
 steps {
-bat "C:/Program Files/Docker/Docker/resources/bin/docker build -t spring-jenkins:0.1"
+bat "docker build -t spring-jenkins:0.1"
 }
 }
 }
