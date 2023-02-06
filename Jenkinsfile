@@ -13,9 +13,12 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                bat "docker build -t spring-jenkins:0.1 ."
-                bat 'docker login --username=%DOCKER_HUB_USERNAME% --password=%DOCKER_HUB_PASSWORD%'
-                bat "docker push spring-jenkins:0.1"
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    bat 'docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%'
+                    bat 'docker build -t spring-jenkins:0.1 .'
+                    bat 'docker tag spring-jenkins:0.1 msgassama/spring-jenkins:0.1'
+                    bat 'docker push msgassama/spring-jenkins:0.1'
+                }
             }
         }
     }
