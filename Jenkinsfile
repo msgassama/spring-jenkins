@@ -11,11 +11,5 @@ steps {
 sh "/opt/maven/bin/mvn test"
 }
 }
-  stage('Deploy') {
-steps {
-sh '/Applications/Docker.app/Contents/Resources/bin/docker-compose/docker-compose up -d --
-build'
-}
-}
 }
 }
