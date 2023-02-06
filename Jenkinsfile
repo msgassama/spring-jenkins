@@ -14,7 +14,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 bat "docker build -t spring-jenkins:0.1 ."
-                bat 'docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD'
+                bat 'docker login --username=%DOCKER_HUB_USERNAME% --password=%DOCKER_HUB_PASSWORD%'
                 bat "docker push spring-jenkins:0.1"
             }
         }
