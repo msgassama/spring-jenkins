@@ -1,37 +1,61 @@
-# Jenkins pipeline script for building, testing and deploying a project
+# Jenkins pipeline script for building, testing, and deploying a project
 pipeline {
     # Define the agent used for the pipeline execution
+    # In this case, we set it to "any" which means that any available agent in the Jenkins environment can be used to run the pipeline.
     agent any
 
     # Define the stages in the pipeline
     stages {
         # Build stage
         stage('Build') {
+            # Steps to perform in this stage
             steps {
                 # Run Maven to build the project
+                # The "bat" step is used to run a Windows batch command.
+                # If the system is not Windows, the equivalent command can be run using a shell script step such as "sh".
+                # For example:
+                # sh "mvn clean package"
                 bat "C:/apache-maven-3.8.6/bin/mvn clean package"
             }
         }
 
         # Test stage
         stage('Test') {
+            # Steps to perform in this stage
             steps {
                 # Run Maven to run the tests
+                # The "bat" step is used to run a Windows batch command.
+                # If the system is not Windows, the equivalent command can be run using a shell script step such as "sh".
+                # For example:
+                # sh "mvn test"
                 bat "C:/apache-maven-3.8.6/bin/mvn test"
             }
         }
 
         # Deploy stage
         stage('Deploy') {
+            # Steps to perform in this stage
             steps {
                 # Log in to Docker Hub using the credentials stored in Jenkins
+                # The "withCredentials" step is used to access credentials stored in Jenkins.
+                # The "usernamePassword" credentials provider is used to retrieve the Docker Hub username and password.
+                # The "credentialsId" parameter specifies the ID of the credentials in Jenkins.
+                # The "usernameVariable" and "passwordVariable" parameters specify the environment variables to store the username and password.
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    # Log in to Docker Hub using the stored credentials
+                    # The "bat" step is used to run a Windows batch command.
+                    # If the system is not Windows, the equivalent command can be run using a shell script step such as "sh".
+                    # For example:
+                    # sh "docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD"
                     bat 'docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%'
                     # Build the Docker image
+                    # The specified command builds the Docker image using the "docker build" command, with the "spring-jenkins:0.1" tag.
                     bat 'docker build -t spring-jenkins:0.1 .'
                     # Tag the image for pushing to Docker Hub
+                    # The specified command tags the image with the "user/spring-jenkins:0.1" tag.
                     bat 'docker tag spring-jenkins:0.1 user/spring-jenkins:0.1'
                     # Push the image to Docker Hub
+                    # The specified command pushes the image to Docker Hub using the "docker push" command.
                     bat 'docker push user/spring-jenkins:0.1'
                 }
             }
