@@ -1,0 +1,40 @@
+# Jenkins pipeline script for building, testing and deploying a project
+pipeline {
+    # Define the agent used for the pipeline execution
+    agent any
+
+    # Define the stages in the pipeline
+    stages {
+        # Build stage
+        stage('Build') {
+            steps {
+                # Run Maven to build the project
+                bat "C:/apache-maven-3.8.6/bin/mvn clean package"
+            }
+        }
+
+        # Test stage
+        stage('Test') {
+            steps {
+                # Run Maven to run the tests
+                bat "C:/apache-maven-3.8.6/bin/mvn test"
+            }
+        }
+
+        # Deploy stage
+        stage('Deploy') {
+            steps {
+                # Log in to Docker Hub using the credentials stored in Jenkins
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    bat 'docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%'
+                    # Build the Docker image
+                    bat 'docker build -t spring-jenkins:0.1 .'
+                    # Tag the image for pushing to Docker Hub
+                    bat 'docker tag spring-jenkins:0.1 user/spring-jenkins:0.1'
+                    # Push the image to Docker Hub
+                    bat 'docker push user/spring-jenkins:0.1'
+                }
+            }
+        }
+    }
+}
